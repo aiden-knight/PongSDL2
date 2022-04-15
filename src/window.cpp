@@ -3,6 +3,7 @@
 
 #include <window.h>
 #include <paddle.h>
+#include <ball.h>
 
 // Runs when Window is created
 Window::Window()
@@ -63,6 +64,11 @@ void Window::renderRect(SDL_Rect rect, SDL_Color color, bool filled)
 void Window::renderPaddle(Paddle paddle)
 {
     renderRect(paddle.getCollider(), {0xFF, 0xFF, 0xFF, 0xFF}, true);
+}
+
+void Window::renderBall(Ball ball)
+{
+    renderRect(ball.getCollider(), {0xFF, 0xFF, 0xFF, 0xFF}, true);
 }
 
 void Window::clearRender()

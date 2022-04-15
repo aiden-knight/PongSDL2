@@ -8,7 +8,7 @@
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 
-struct keyDataStruct
+struct KeyData
 {
 	bool upKeyDown = false,
 		 wKeyDown  = false,
@@ -16,14 +16,15 @@ struct keyDataStruct
 		 sKeyDown = false;
 };
 
-struct gameDataStruct
+struct GameData
 {
 	Window& window;
 	Paddle& playerPaddle;
-	Timer& stepTimer;
-	int paddleVelocity;
 	Paddle& opponentPaddle;
+	Ball& ball;
+	Timer& stepTimer;
 	int opponentDirection;
+	const int paddleVelocity;
 };
 
 // Returns false on error
@@ -43,7 +44,7 @@ bool init(Window& window)
 	return true;
 }
 
-void keyEvents(SDL_Keycode keyCode, keyDataStruct& keyData, bool keyDown)
+void keyEvents(SDL_Keycode keyCode, KeyData& keyData, bool keyDown)
 {
 	switch(keyCode)
 	{
@@ -62,7 +63,7 @@ void keyEvents(SDL_Keycode keyCode, keyDataStruct& keyData, bool keyDown)
 	}
 }
 
-void handleEvents(SDL_Event e, bool& exit, keyDataStruct& keyData)
+void handleEvents(SDL_Event e, bool& exit, KeyData& keyData)
 {
 	while(SDL_PollEvent(&e)!=0)
 	{
@@ -81,22 +82,26 @@ void handleEvents(SDL_Event e, bool& exit, keyDataStruct& keyData)
 	}
 }
 
-void handleMovement(gameDataStruct& gameData, keyDataStruct& keyData)
+void handleMovement(GameData& gameData, KeyData& keyData)
 {
 	float distance = gameData.paddleVelocity*gameData.stepTimer.getTicks()/1000.f;
+	int direction = 0;
 	if(keyData.upKeyDown||keyData.wKeyDown)
 	{
-		gameData.playerPaddle.updateYPos(-distance,gameData.window.getHeight()); // Negative because y=0 is at top of screen
+		direction = -1; // Negative because y=0 is at top of screen
 	}
 	else if(keyData.downKeyDown||keyData.sKeyDown)
 	{
-		gameData.playerPaddle.updateYPos(distance,gameData.window.getHeight());
+		direction = 1;
 	}
+	gameData.playerPaddle.updateYPos(direction*distance, gameData.window.getHeight());
 
-	if(gameData.opponentPaddle.updateYPos(gameData.opponentDirection*distance,gameData.window.getHeight()))
+	if(gameData.opponentPaddle.updateYPos(gameData.opponentDirection*distance, gameData.window.getHeight()))
 	{
 		gameData.opponentDirection*=-1;
 	}
+
+	gameData.ball.updatePos(gameData.playerPaddle.getCollider(), gameData.opponentPaddle.getCollider(), gameData.stepTimer.getTicks()/1000.f);
 
 	gameData.stepTimer.Start();
 }
@@ -107,12 +112,13 @@ void gameLoop(Window& window)
 	SDL_Event e;
 	Paddle playerPaddle(20, (SCREEN_HEIGHT-50)/2);                  // 50 is the paddle's height
 	Paddle opponentPaddle(SCREEN_WIDTH - 30, (SCREEN_HEIGHT-50)/2); // 30 as we want 20 padding and paddle is 10 wide
-	int opponentDirection{1}; 										// 1 or -1 for up or down
+	Ball ball(100, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+	int opponentDirection{1};                                       // 1 or -1 for up or down
 	Timer stepTimer;
 	int paddleVelocity{300};
 
-	gameDataStruct gameData{window,playerPaddle,stepTimer,paddleVelocity,opponentPaddle,opponentDirection};
-	keyDataStruct keyData;
+	GameData gameData{window, playerPaddle,opponentPaddle, ball, stepTimer, opponentDirection, paddleVelocity};
+	KeyData keyData;
 	while(!exit)
 	{
 		handleEvents(e, exit, keyData);
@@ -121,6 +127,7 @@ void gameLoop(Window& window)
 		window.clearRender();
 		window.renderPaddle(playerPaddle);
 		window.renderPaddle(opponentPaddle);
+		window.renderBall(ball);
 		window.updateRender();
 	}
 }

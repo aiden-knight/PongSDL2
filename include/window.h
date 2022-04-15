@@ -2,6 +2,7 @@
 #include <SDL2/SDL.h>
 
 #include <paddle.h>
+#include <ball.h>
 
 class Window
 {
@@ -18,6 +19,7 @@ class Window
         bool create(const char* title, int width, int height);
         void renderRect(SDL_Rect rect, SDL_Color color, bool filled);
         void renderPaddle(Paddle paddle);
+        void renderBall(Ball ball);
         void clearRender();
         void updateRender();
         int getHeight();
