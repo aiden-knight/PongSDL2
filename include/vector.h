@@ -1,13 +1,16 @@
-struct Vector2
+#pragma once
+
+class Vector2
 {
+public:
   float x;
   float y;
-  
-  Vector2& operator + (float d)
-  {
-    x+=d;
-    y+=d;
-    return *this;
-  } 
-  Vector2 operator - (float d) const {return Vector2{x-d, y-d};}
+
+  Vector2 operator + (float f) const;
+  Vector2 operator - (float f) const;
+  Vector2& operator += (float f);
+  Vector2& operator -= (float f);
+  Vector2 operator * (float f);
+  Vector2& operator += (const Vector2& other);
+  Vector2& operator -= (const Vector2& other);
 };

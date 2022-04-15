@@ -96,10 +96,10 @@ void handleMovement(GameData& gameData, KeyData& keyData)
 	}
 	gameData.playerPaddle.updateYPos(direction*distance, gameData.window.getHeight());
 
-	if(gameData.opponentPaddle.updateYPos(gameData.opponentDirection*distance, gameData.window.getHeight()))
-	{
-		gameData.opponentDirection*=-1;
-	}
+	// if(gameData.opponentPaddle.updateYPos(gameData.opponentDirection*distance, gameData.window.getHeight()))
+	// {
+	// 	gameData.opponentDirection*=-1;
+	// }
 
 	gameData.ball.updatePos(gameData.playerPaddle.getCollider(), gameData.opponentPaddle.getCollider(), gameData.stepTimer.getTicks()/1000.f);
 
@@ -112,7 +112,7 @@ void gameLoop(Window& window)
 	SDL_Event e;
 	Paddle playerPaddle(20, (SCREEN_HEIGHT-50)/2);                  // 50 is the paddle's height
 	Paddle opponentPaddle(SCREEN_WIDTH - 30, (SCREEN_HEIGHT-50)/2); // 30 as we want 20 padding and paddle is 10 wide
-	Ball ball(100, SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+	Ball ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 	int opponentDirection{1};                                       // 1 or -1 for up or down
 	Timer stepTimer;
 	int paddleVelocity{300};
