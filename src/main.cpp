@@ -85,23 +85,31 @@ void handleEvents(SDL_Event e, bool& exit, KeyData& keyData)
 void handleMovement(GameData& gameData, KeyData& keyData)
 {
 	float distance = gameData.paddleVelocity*gameData.stepTimer.getTicks()/1000.f;
-	int direction = 0;
-	if(keyData.upKeyDown||keyData.wKeyDown)
+	
+	int playerDirection = 0;
+	if(keyData.wKeyDown)
 	{
-		direction = -1; // Negative because y=0 is at top of screen
+		playerDirection = -1; // Negative because y=0 is at top of screen
 	}
-	else if(keyData.downKeyDown||keyData.sKeyDown)
+	else if(keyData.sKeyDown)
 	{
-		direction = 1;
+		playerDirection = 1;
 	}
-	gameData.playerPaddle.updateYPos(direction*distance, gameData.window.getHeight());
+	gameData.playerPaddle.updateYPos(playerDirection*distance, gameData.window.getHeight());
 
-	// if(gameData.opponentPaddle.updateYPos(gameData.opponentDirection*distance, gameData.window.getHeight()))
-	// {
-	// 	gameData.opponentDirection*=-1;
-	// }
+	int opponentDirection = 0;
+	if(keyData.upKeyDown)
+	{
+		opponentDirection = -1; // Negative because y=0 is at top of screen
+	}
+	else if(keyData.downKeyDown)
+	{
+		opponentDirection = 1;
+	}
+	gameData.opponentPaddle.updateYPos(opponentDirection*distance, gameData.window.getHeight());
 
-	gameData.ball.updatePos(gameData.playerPaddle.getCollider(), gameData.opponentPaddle.getCollider(), gameData.stepTimer.getTicks()/1000.f);
+	gameData.ball.updatePos(gameData.playerPaddle.getCollider(), gameData.opponentPaddle.getCollider(),
+	                        gameData.window.getWidth(), gameData.window.getHeight(), gameData.stepTimer.getTicks()/1000.f);
 
 	gameData.stepTimer.Start();
 }
@@ -115,9 +123,9 @@ void gameLoop(Window& window)
 	Ball ball(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
 	int opponentDirection{1};                                       // 1 or -1 for up or down
 	Timer stepTimer;
-	int paddleVelocity{300};
+	int paddleVelocity{400};
 
-	GameData gameData{window, playerPaddle,opponentPaddle, ball, stepTimer, opponentDirection, paddleVelocity};
+	GameData gameData{window, playerPaddle, opponentPaddle, ball, stepTimer, opponentDirection, paddleVelocity};
 	KeyData keyData;
 	while(!exit)
 	{

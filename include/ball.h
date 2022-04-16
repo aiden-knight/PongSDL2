@@ -14,6 +14,9 @@ class Ball
     Ball(int xPos, int yPos);
     void posToRect();
     SDL_Rect getCollider();
+    bool checkIntersect(SDL_Rect collider);
     bool checkCollision(SDL_Rect collider);
-    void updatePos(SDL_Rect collider1, SDL_Rect collider2, float timeStep);
+    void changeDirection(SDL_Rect hitCollider);
+    void reset(int screenWidth, int screenHeight, int direction);
+    void updatePos(SDL_Rect paddle1, SDL_Rect paddle2, int screenWidth, int screenHeight, float timeStep);
 };
