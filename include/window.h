@@ -3,6 +3,7 @@
 
 #include <paddle.h>
 #include <ball.h>
+#include <text.h>
 
 class Window
 {
@@ -20,8 +21,10 @@ class Window
         void renderRect(const SDL_Rect& rect, SDL_Color& color, bool filled);
         void renderPaddle(const Paddle& paddle);
         void renderBall(const Ball& ball);
+        void renderText(const Text& text, int xPos, int yPos);
         void clearRender();
         void updateRender();
         int getHeight() const;
         int getWidth() const;
+        SDL_Renderer* getRenderer();
 };

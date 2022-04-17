@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <iostream>
 
 #include <vector.h>
 #include <ball.h>
@@ -124,10 +125,14 @@ void Ball::updatePos(GameData& gameData)
   if(mRect.x<0)
   {
     reset(gameData.window.getWidth(), gameData.window.getHeight(), 1);
+    gameData.player2Score++;
+    gameData.player2ScoreText.textureFromText(gameData.window.getRenderer(), std::to_string(gameData.player2Score).c_str(),{0xFF, 0xFF, 0xFF, 0xFF});
   }
   else if(mRect.x+mRect.w>gameData.window.getWidth())
   {
     reset(gameData.window.getWidth(), gameData.window.getHeight(), -1);
+    gameData.player1Score++;
+    gameData.player1ScoreText.textureFromText(gameData.window.getRenderer(), std::to_string(gameData.player1Score).c_str(), {0xFF, 0xFF, 0xFF, 0xFF});
   }
 
   posToRect();

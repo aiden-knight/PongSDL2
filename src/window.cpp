@@ -4,6 +4,7 @@
 #include <window.h>
 #include <paddle.h>
 #include <ball.h>
+#include <text.h>
 
 // Runs when Window is created
 Window::Window()
@@ -73,6 +74,15 @@ void Window::renderBall(const Ball& ball)
     renderRect(ball.getCollider(), color, true);
 }
 
+void Window::renderText(const Text& text, int xPos, int yPos)
+{
+    SDL_Rect renderQuad{xPos, yPos};
+    renderQuad.w = text.getWidth();
+    renderQuad.h = text.getHeight();
+
+    SDL_RenderCopy(mRenderer, text.getTexture(), NULL, &renderQuad);
+}
+
 void Window::clearRender()
 {
     SDL_SetRenderDrawColor(mRenderer, mBackgroundColor.r, mBackgroundColor.g, mBackgroundColor.b, mBackgroundColor.a);
@@ -92,4 +102,9 @@ int Window::getHeight() const
 int Window::getWidth() const
 {
     return mWidth;
+}
+
+SDL_Renderer* Window::getRenderer()
+{
+    return mRenderer;
 }
