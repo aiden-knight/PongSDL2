@@ -20,7 +20,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "debugSDL2"
+            "preLaunchTask": "buildSDL2"
         }
     ]
 }
