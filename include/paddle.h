@@ -8,6 +8,6 @@ class Paddle
         float mPosY;
     public:
         Paddle(int xPos, int yPos);
-        SDL_Rect getCollider();
+        const SDL_Rect& getCollider() const;
         bool updateYPos(float distance, int maxY);
 };

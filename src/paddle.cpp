@@ -9,7 +9,7 @@ Paddle::Paddle(int xPos, int yPos)
     mPosY = yPos;
 }
 
-SDL_Rect Paddle::getCollider()
+const SDL_Rect& Paddle::getCollider() const
 {
     return mRect;
 }

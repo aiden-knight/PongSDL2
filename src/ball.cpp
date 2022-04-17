@@ -2,6 +2,10 @@
 
 #include <vector.h>
 #include <ball.h>
+#include <gameDataStruct.h>
+#include <paddle.h>
+#include <timer.h>
+#include <window.h>
 
 Ball::Ball(int xPos, int yPos)
 {
@@ -19,13 +23,13 @@ void Ball::posToRect()
   mRect.y = (int) (mPosition.y - mRect.h/2);
 }
 
-SDL_Rect Ball::getCollider()
+const SDL_Rect& Ball::getCollider() const
 {
   return mRect;
 }
 
 // Checks if the rects intersects with ball
-bool Ball::checkIntersect(SDL_Rect collider)
+bool Ball::checkIntersect(SDL_Rect& collider)
 {
   bool intersect = false;
   if(mRect.x>collider.x && mRect.x<collider.x+collider.w)
@@ -48,7 +52,7 @@ bool Ball::checkIntersect(SDL_Rect collider)
 }
 
 // Checks for collision on direction of travel
-bool Ball::checkCollision(SDL_Rect collider)
+bool Ball::checkCollision(SDL_Rect& collider)
 {
   bool colliding = false;
 
@@ -69,8 +73,8 @@ bool Ball::checkCollision(SDL_Rect collider)
   return colliding;
 }
 
-// change direction when hitting a paddle
-void Ball::changeDirection(SDL_Rect hitCollider)
+// change direction when based on where it hits a paddle
+void Ball::changeDirection(SDL_Rect& hitCollider)
 {
   float tempName = mPosition.y;
   tempName -= hitCollider.y;
@@ -87,11 +91,15 @@ void Ball::reset(int screenWidth, int screenHeight, int direction)
   mDirection = {(float) direction, 0};
 }
 
-void Ball::updatePos(SDL_Rect paddle1, SDL_Rect paddle2, int screenWidth, int screenHeight,float timeStep)
+void Ball::updatePos(GameData& gameData)
 {
+  float timeStep = gameData.stepTimer.getTicks()/1000.f;
   Vector2 displacement = mDirection*timeStep*mVelocity;
-  mPosition += displacement;
-  if(checkCollision(paddle1))
+  mPosition += displacement; // try and move
+
+  SDL_Rect paddle1 = gameData.player1Paddle.getCollider();
+  SDL_Rect paddle2 = gameData.player2Paddle.getCollider();
+  if(checkCollision(paddle1)) // revert the move if there's any collisions
   {
     mPosition -= displacement;
     changeDirection(paddle1);
@@ -107,7 +115,7 @@ void Ball::updatePos(SDL_Rect paddle1, SDL_Rect paddle2, int screenWidth, int sc
     mPosition -= displacement;
     mDirection.y *= -1;
   }
-  else if(mRect.y+mRect.h>screenHeight && mDirection.y>0)
+  else if(mRect.y+mRect.h > gameData.window.getHeight() && mDirection.y > 0)
   {
     mPosition -= displacement;
     mDirection.y *= -1;
@@ -115,11 +123,11 @@ void Ball::updatePos(SDL_Rect paddle1, SDL_Rect paddle2, int screenWidth, int sc
 
   if(mRect.x<0)
   {
-    reset(screenWidth, screenHeight, 1);
+    reset(gameData.window.getWidth(), gameData.window.getHeight(), 1);
   }
-  else if(mRect.x+mRect.w>screenWidth)
+  else if(mRect.x+mRect.w>gameData.window.getWidth())
   {
-    reset(screenWidth, screenHeight, -1);
+    reset(gameData.window.getWidth(), gameData.window.getHeight(), -1);
   }
 
   posToRect();

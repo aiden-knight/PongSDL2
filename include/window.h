@@ -17,11 +17,11 @@ class Window
         Window(SDL_Color backgroundColor);
         ~Window();
         bool create(const char* title, int width, int height);
-        void renderRect(SDL_Rect rect, SDL_Color color, bool filled);
-        void renderPaddle(Paddle paddle);
-        void renderBall(Ball ball);
+        void renderRect(const SDL_Rect& rect, SDL_Color& color, bool filled);
+        void renderPaddle(const Paddle& paddle);
+        void renderBall(const Ball& ball);
         void clearRender();
         void updateRender();
-        int getHeight();
-        int getWidth();
+        int getHeight() const;
+        int getWidth() const;
 };

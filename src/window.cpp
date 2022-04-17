@@ -48,7 +48,7 @@ bool Window::create(const char* title, int width, int height)
     return true;
 }
 
-void Window::renderRect(SDL_Rect rect, SDL_Color color, bool filled)
+void Window::renderRect(const SDL_Rect& rect, SDL_Color& color, bool filled)
 {
     SDL_SetRenderDrawColor(mRenderer, color.r, color.g, color.b, color.a);
     if(filled)
@@ -61,14 +61,16 @@ void Window::renderRect(SDL_Rect rect, SDL_Color color, bool filled)
     }
 }
 
-void Window::renderPaddle(Paddle paddle)
+void Window::renderPaddle(const Paddle& paddle)
 {
-    renderRect(paddle.getCollider(), {0xFF, 0xFF, 0xFF, 0xFF}, true);
+    SDL_Color color = {0xFF, 0xFF, 0xFF, 0xFF};
+    renderRect(paddle.getCollider(), color, true);
 }
 
-void Window::renderBall(Ball ball)
+void Window::renderBall(const Ball& ball)
 {
-    renderRect(ball.getCollider(), {0xFF, 0xFF, 0xFF, 0xFF}, true);
+    SDL_Color color = {0xFF, 0xFF, 0xFF, 0xFF};
+    renderRect(ball.getCollider(), color, true);
 }
 
 void Window::clearRender()
@@ -82,12 +84,12 @@ void Window::updateRender()
     SDL_RenderPresent(mRenderer);
 }
 
-int Window::getHeight()
+int Window::getHeight() const
 {
     return mHeight;
 }
 
-int Window::getWidth()
+int Window::getWidth() const
 {
     return mWidth;
 }
